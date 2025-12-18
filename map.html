@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بقعة- الخريطة</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="dashboard.html">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>بقعة</span>
+                </a>
+            </div>
+
+            <div class="nav-search">
+                <input type="text" placeholder="ابحث عن عقار أو منطقة...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-menu">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="map.html" class="nav-link active">
+                    <i class="fas fa-map"></i>
+                    <span>الخريطة</span>
+                </a>
+                <a href="add-property.html" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة عقار</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-heart"></i>
+                    <span>المفضلة</span>
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <img src="assets/user-avatar.png" alt="صورة المستخدم" class="user-avatar">
+                        <span>محمد أحمد</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#"><i class="fas fa-user"></i> الملف الشخصي</a>
+                        <a href="#"><i class="fas fa-cog"></i> الإعدادات</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> المساعدة</a>
+                        <div class="divider"></div>
+                        <a href="index.html"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="map-container">
+        <!-- شريط الفلاتر -->
+        <div class="map-filters">
+            <div class="filters-header">
+                <h3><i class="fas fa-filter"></i> فلاتر البحث</h3>
+                <button class="btn btn-sm" id="reset-filters"><i class="fas fa-redo"></i> إعادة تعيين</button>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-map-marker-alt"></i> الموقع</label>
+                <div class="location-selectors">
+                    <select id="country-select">
+                        <option value="">اختر الدولة</option>
+                        <option value="sa">المملكة العربية السعودية</option>
+                        <option value="ae">الإمارات العربية المتحدة</option>
+                        <option value="qa">قطر</option>
+                        <option value="bh">البحرين</option>
+                        <option value="om">عمان</option>
+                        <option value="kw">الكويت</option>
+                    </select>
+                    
+                    <select id="city-select">
+                        <option value="">اختر المدينة</option>
+                        <option value="riyadh">الرياض</option>
+                        <option value="jeddah">جدة</option>
+                        <option value="dammam">الدمام</option>
+                        <option value="makkah">مكة المكرمة</option>
+                        <option value="medina">المدينة المنورة</option>
+                        <option value="khobar">الخبر</option>
+                    </select>
+
+                    <select id="district-select">
+                        <option value="">اختر الحي</option>
+                        <option value="al-nakheel">حي النخيل</option>
+                        <option value="al-olah">حي العليا</option>
+                        <option value="al-yasmin">حي الياسمين</option>
+                        <option value="al-malaz">حي الملز</option>
+                        <option value="al-aziziyah">حي العزيزية</option>
+                        <option value="al-rawdah">حي الروضة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-home"></i> نوع العقار</label>
+                <div class="property-type-filters">
+                    <label class="checkbox-label">
+                        <input type="checkbox" checked> شقة
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox"> فيلا
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox"> أرض
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox"> عمارة
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox"> مكتب
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox"> محل تجاري
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-money-bill-wave"></i> نطاق السعر (ريال)</label>
+                <div class="price-range">
+                    <input type="range" id="price-slider" min="0" max="10000000" value="5000000" step="100000">
+                    <div class="price-labels">
+                        <span>0</span>
+                        <span id="current-price">5,000,000</span>
+                        <span>10,000,000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-bed"></i> عدد الغرف</label>
+                <div class="room-filters">
+                    <button class="room-btn active">أي</button>
+                    <button class="room-btn">1+</button>
+                    <button class="room-btn">2+</button>
+                    <button class="room-btn">3+</button>
+                    <button class="room-btn">4+</button>
+                    <button class="room-btn">5+</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-ruler-combined"></i> المساحة (م²)</label>
+                <div class="area-range">
+                    <input type="range" id="area-slider" min="0" max="1000" value="500" step="10">
+                    <div class="area-labels">
+                        <span>0</span>
+                        <span id="current-area">500</span>
+                        <span>1000+</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="apply-filters">
+                <i class="fas fa-search"></i> تطبيق الفلاتر
+            </button>
+        </div>
+
+        <!-- الخريطة -->
+        <div class="map-wrapper">
+            <div class="map-header">
+                <h2><i class="fas fa-map"></i> خريطة العقارات</h2>
+                <div class="map-controls">
+                    <button class="btn btn-sm" id="my-location">
+                        <i class="fas fa-location-arrow"></i> موقعي
+                    </button>
+                    <button class="btn btn-sm" id="add-property-map">
+                        <i class="fas fa-plus"></i> إضافة عقار
+                    </button>
+                </div>
+            </div>
+            
+            <div id="map">
+                <!-- سيتم تحميل الخريطة هنا عبر JavaScript -->
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>جاري تحميل الخريطة...</p>
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قائمة العقارات القابلة للإخفاء -->
+        <div class="properties-sidebar">
+            <button class="sidebar-toggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="sidebar-header">
+                <h3><i class="fas fa-list"></i> قائمة العقارات</h3>
+                <div class="sidebar-actions">
+                    <span class="results-count">4 عقارات</span>
+                    <button class="hide-sidebar-btn" id="hide-sidebar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button class="close-sidebar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="properties-list-container">
+                <div class="properties-list">
+                    <!-- سيتم إضافة العقارات ديناميكياً هنا -->
+                    
+                    <!-- عقار 1 -->
+                    <div class="property-card" data-id="1">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property1.jpg" alt="فيلا فاخرة في الرياض">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">1,250,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي النخيل، الرياض
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">فيلا فاخرة في الرياض</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="detail-label">غرف</div>
+                                    <div class="detail-value">5</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bath"></i>
+                                    </div>
+                                    <div class="detail-label">حمامات</div>
+                                    <div class="detail-value">4</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">450 م²</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ 3 أيام</span>
+                                <a href="property.html?id=1" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- عقار 2 -->
+                    <div class="property-card" data-id="2">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property2.jpg" alt="شقة حديثة في جدة">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">850,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي الصفا، جدة
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">شقة حديثة في جدة</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="detail-label">غرف</div>
+                                    <div class="detail-value">3</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bath"></i>
+                                    </div>
+                                    <div class="detail-label">حمامات</div>
+                                    <div class="detail-value">2</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">180 م²</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ 5 أيام</span>
+                                <a href="property.html?id=2" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- عقار 3 -->
+                    <div class="property-card" data-id="3">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property3.jpg" alt="أرض سكنية في الرياض">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">2,500,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي الياسمين، الرياض
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">أرض سكنية في الرياض</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">800 م²</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-map"></i>
+                                    </div>
+                                    <div class="detail-label">المسطح</div>
+                                    <div class="detail-value">مستوي</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-road"></i>
+                                    </div>
+                                    <div class="detail-label">الواجهة</div>
+                                    <div class="detail-value">20 م</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ أسبوع</span>
+                                <a href="property.html?id=3" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- عقار 4 -->
+                    <div class="property-card" data-id="4">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property4.jpg" alt="عمارة سكنية في الرياض">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">3,500,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي العليا، الرياض
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">عمارة سكنية في الرياض</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="detail-label">غرف</div>
+                                    <div class="detail-value">12</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bath"></i>
+                                    </div>
+                                    <div class="detail-label">حمامات</div>
+                                    <div class="detail-value">12</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">1200 م²</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ يومين</span>
+                                <a href="property.html?id=4" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- عقار 5 -->
+                    <div class="property-card" data-id="5">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property5.jpg" alt="شقة فاخرة في الخبر">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">1,800,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي الراكة، الخبر
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">شقة فاخرة في الخبر</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="detail-label">غرف</div>
+                                    <div class="detail-value">4</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bath"></i>
+                                    </div>
+                                    <div class="detail-label">حمامات</div>
+                                    <div class="detail-value">3</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">280 م²</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ 6 أيام</span>
+                                <a href="property.html?id=5" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- عقار 6 -->
+                    <div class="property-card" data-id="6">
+                        <div class="property-card-badge">للبيع</div>
+                        <div class="property-card-image">
+                            <img src="assets/property6.jpg" alt="فيلا راقية في جدة">
+                            <div class="property-card-overlay">
+                                <div class="overlay-price">4,200,000 ريال</div>
+                                <div class="overlay-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي الصفا، جدة
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card-info">
+                            <h3 class="property-card-title">فيلا راقية في جدة</h3>
+                            <div class="property-card-details">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="detail-label">غرف</div>
+                                    <div class="detail-value">6</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-bath"></i>
+                                    </div>
+                                    <div class="detail-label">حمامات</div>
+                                    <div class="detail-value">5</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-ruler-combined"></i>
+                                    </div>
+                                    <div class="detail-label">المساحة</div>
+                                    <div class="detail-value">650 م²</div>
+                                </div>
+                            </div>
+                            <div class="property-card-footer">
+                                <span class="property-card-date">منذ 4 أيام</span>
+                                <a href="property.html?id=6" class="view-details-btn">
+                                    التفاصيل <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة العقار المعدلة -->
+    <div class="property-marker-popup" id="property-popup">
+        <button class="close-popup">×</button>
+        <div class="popup-content">
+            <div class="popup-image">
+                <img src="assets/property1.jpg" alt="العقار">
+            </div>
+            <div class="popup-info">
+                <h3>فيلا فاخرة في حي النخيل</h3>
+                <p class="popup-price">1,250,000 ريال</p>
+                <div class="popup-details">
+                    <span><i class="fas fa-bed"></i> 5 غرف</span>
+                    <span><i class="fas fa-bath"></i> 4 حمامات</span>
+                    <span><i class="fas fa-ruler-combined"></i> 450 م²</span>
+                </div>
+                <p class="popup-address">
+                    <i class="fas fa-map-marker-alt"></i> حي النخيل، الرياض، المملكة العربية السعودية
+                </p>
+                <div class="popup-actions">
+                    <a href="property.html" class="btn btn-primary">
+                        <i class="fas fa-info-circle"></i> عرض التفاصيل
+                    </a>
+                    <button class="btn btn-outline" onclick="addToFavorites(1)">
+                        <i class="far fa-heart"></i> حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبة Leaflet للخرائط -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
+    
+    <style>
+        /* إضافة تنسيقات إضافية للصفحة */
+        .loading-spinner {
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .area-range {
+            padding: 10px 0;
+        }
+        
+        #area-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .area-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+        
+        .property-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .property-card.selected {
+            border: 2px solid #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* تحسينات للجوال */
+        @media (max-width: 768px) {
+            .map-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .map-filters {
+                max-height: 400px;
+                overflow-y: auto;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .properties-sidebar {
+                position: fixed;
+                top: 70px;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                max-width: 400px;
+                z-index: 1000;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .properties-sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .sidebar-toggle {
+                display: none;
+            }
+            
+            .close-sidebar {
+                display: block;
+            }
+            
+            .mobile-sidebar-toggle {
+                display: flex !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .property-card-details {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .popup-actions {
+                flex-direction: column;
+            }
+            
+            .popup-actions .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    
+    <script>
+        // تهيئة إضافية للصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحكم في شريط المساحة
+            const areaSlider = document.getElementById('area-slider');
+            const currentArea = document.getElementById('current-area');
+            
+            if (areaSlider && currentArea) {
+                areaSlider.addEventListener('input', function() {
+                    const value = parseInt(this.value);
+                    currentArea.textContent = value;
+                });
+            }
+            
+            // إضافة تفاصيل إضافية للعقارات
+            const propertyCards = document.querySelectorAll('.property-card');
+            propertyCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const propertyId = this.getAttribute('data-id');
+                    
+                    // إزالة التحديد السابق
+                    propertyCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // إضافة التحديد الحالي
+                    this.classList.add('selected');
+                    
+                    // فتح نافذة العقار
+                    const property = getPropertyDetails(propertyId);
+                    if (property) {
+                        openPropertyPopup(property);
+                    }
+                });
+            });
+            
+            // إضافة تأثير تحميل للخريطة
+            setTimeout(() => {
+                const mapPlaceholder = document.querySelector('.map-placeholder');
+                if (mapPlaceholder) {
+                    mapPlaceholder.style.opacity = '0';
+                    setTimeout(() => {
+                        mapPlaceholder.style.display = 'none';
+                    }, 300);
+                }
+            }, 1500);
+        });
+        
+        // دالة للحصول على تفاصيل العقار
+        function getPropertyDetails(id) {
+            const properties = {
+                1: {
+                    title: "فيلا فاخرة في الرياض",
+                    price: "1,250,000 ريال",
+                    image: "assets/property1.jpg",
+                    rooms: 5,
+                    baths: 4,
+                    area: "450 م²",
+                    address: "حي النخيل، الرياض، المملكة العربية السعودية",
+                    description: "فيلا فاخرة مكونة من دورين مع حديقة وبركة سباحة ومواقف سيارات",
+                    features: ["بركة سباحة", "حديقة خاصة", "مواقف سيارات", "نظام أمني", "تكييف مركزي"]
+                },
+                2: {
+                    title: "شقة حديثة في جدة",
+                    price: "850,000 ريال",
+                    image: "assets/property2.jpg",
+                    rooms: 3,
+                    baths: 2,
+                    area: "180 م²",
+                    address: "حي الصفا، جدة",
+                    description: "شقة حديثة في برج سكني مع إطلالة رائعة على البحر وخدمات متكاملة",
+                    features: ["إطلالة على البحر", "صالة رياضية", "مواقف تحت الأرض", "نظام أمني", "تكييف مركزي"]
+                },
+                3: {
+                    title: "أرض سكنية في الرياض",
+                    price: "2,500,000 ريال",
+                    image: "assets/property3.jpg",
+                    area: "800 م²",
+                    address: "حي الياسمين، الرياض",
+                    description: "أرض سكنية في موقع مميز صالحة للبناء الفوري مع جميع الخدمات",
+                    features: ["موقع مميز", "جميع الخدمات", "واجهة 20 متر", "ترخيص بناء", "قريبة من الخدمات"]
+                },
+                4: {
+                    title: "عمارة سكنية في الرياض",
+                    price: "3,500,000 ريال",
+                    image: "assets/property4.jpg",
+                    rooms: 12,
+                    baths: 12,
+                    area: "1200 م²",
+                    address: "حي العليا، الرياض",
+                    description: "عمارة سكنية مكونة من 4 شقق فاخرة مع جميع الخدمات والمرافق",
+                    features: ["4 شقق", "مصاعد", "مواقف سيارات", "نظام أمني", "خدمات صيانة"]
+                },
+                5: {
+                    title: "شقة فاخرة في الخبر",
+                    price: "1,800,000 ريال",
+                    image: "assets/property5.jpg",
+                    rooms: 4,
+                    baths: 3,
+                    area: "280 م²",
+                    address: "حي الراكة، الخبر",
+                    description: "شقة فاخرة في موقع مميز مع إطلالة على البحر وخدمات فندقية",
+                    features: ["إطلالة على البحر", "خدمات فندقية", "صالة رياضية", "ساونا", "مواقف تحت الأرض"]
+                },
+                6: {
+                    title: "فيلا راقية في جدة",
+                    price: "4,200,000 ريال",
+                    image: "assets/property6.jpg",
+                    rooms: 6,
+                    baths: 5,
+                    area: "650 م²",
+                    address: "حي الصفا، جدة",
+                    description: "فيلا راقية مع تصميم عصري وحديقة خاصة وبركة سباحة ومسبح داخلي",
+                    features: ["بركة سباحة", "حديقة خاصة", "مسبح داخلي", "صالون ضيوف", "غرفة سينما"]
+                }
+            };
+            
+            return properties[id];
+        }
+        
+        // دالة محسنة لفتح نافذة العقار
+        function openPropertyPopup(property) {
+            const popup = document.getElementById('property-popup');
+            if (!popup) return;
+            
+            // تحديث المحتوى
+            const title = popup.querySelector('h3');
+            const price = popup.querySelector('.popup-price');
+            const image = popup.querySelector('.popup-image img');
+            const details = popup.querySelector('.popup-details');
+            const address = popup.querySelector('.popup-address');
+            const detailsBtn = popup.querySelector('.btn-primary');
+            const favoriteBtn = popup.querySelector('.btn-outline');
+            
+            if (title) title.textContent = property.title;
+            if (price) price.textContent = property.price;
+            if (image) image.src = property.image;
+            if (address) address.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${property.address}`;
+            
+            if (details) {
+                details.innerHTML = `
+                    ${property.rooms ? `<span><i class="fas fa-bed"></i> ${property.rooms} غرف</span>` : ''}
+                    ${property.baths ? `<span><i class="fas fa-bath"></i> ${property.baths} حمامات</span>` : ''}
+                    ${property.area ? `<span><i class="fas fa-ruler-combined"></i> ${property.area}</span>` : ''}
+                `;
+            }
+            
+            if (detailsBtn) {
+                detailsBtn.href = `property.html?id=${property.id}`;
+                detailsBtn.innerHTML = `<i class="fas fa-info-circle"></i> عرض التفاصيل`;
+            }
+            
+            if (favoriteBtn) {
+                favoriteBtn.setAttribute('onclick', `addToFavorites(${property.id})`);
+                favoriteBtn.innerHTML = `<i class="far fa-heart"></i> حفظ`;
+            }
+            
+            // إظهار النافذة
+            popup.style.display = 'block';
+            
+            // إضافة حدث للإغلاق
+            setTimeout(() => {
+                document.addEventListener('click', closePopupOnClickOutside, true);
+            }, 100);
+        }
+        
+        // دالة إغلاق النافذة عند النقر خارجها
+        function closePopupOnClickOutside(e) {
+            const popup = document.getElementById('property-popup');
+            const closeBtn = document.querySelector('.close-popup');
+            
+            if (popup && !popup.contains(e.target) && !closeBtn?.contains(e.target)) {
+                closePropertyPopup();
+            }
+        }
+        
+        // دالة إغلاق نافذة العقار
+        function closePropertyPopup() {
+            const popup = document.getElementById('property-popup');
+            if (popup) {
+                popup.style.display = 'none';
+                document.removeEventListener('click', closePopupOnClickOutside, true);
+            }
+        }
+        
+        // إضافة حدث لإغلاق النافذة بزر الإغلاق
+        document.addEventListener('DOMContentLoaded', function() {
+            const closePopupBtn = document.querySelector('.close-popup');
+            if (closePopupBtn) {
+                closePopupBtn.addEventListener('click', closePropertyPopup);
+            }
+        });
+    </script>
+</body>
+</html>

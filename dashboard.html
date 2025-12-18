@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بقعة - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="dashboard.html">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>عقارات Map</span>
+                </a>
+            </div>
+
+            <div class="nav-search">
+                <input type="text" placeholder="ابحث عن عقار أو منطقة...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-menu">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="map.html" class="nav-link">
+                    <i class="fas fa-map"></i>
+                    <span>الخريطة</span>
+                </a>
+                <a href="add-property.html" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة عقار</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-heart"></i>
+                    <span>المفضلة</span>
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <img src="assets/user-avatar.png" alt="صورة المستخدم" class="user-avatar">
+                        <span>محمد أحمد</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#"><i class="fas fa-user"></i> الملف الشخصي</a>
+                        <a href="#"><i class="fas fa-cog"></i> الإعدادات</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> المساعدة</a>
+                        <div class="divider"></div>
+                        <a href="index.html"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- الشريط الجانبي -->
+        <aside class="sidebar">
+            <div class="user-info">
+                <img src="assets/user-avatar.png" alt="صورة المستخدم" class="user-avatar-large">
+                <h3>محمد أحمد</h3>
+                <p class="user-email">mohamed@example.com</p>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i> حساب فردي
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="sidebar-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+                <a href="add-property.html" class="sidebar-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة عقار جديد</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>عقاراتي</span>
+                    <span class="badge">3</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-heart"></i>
+                    <span>المفضلة</span>
+                    <span class="badge">7</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>الرسائل</span>
+                    <span class="badge new">5</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>الإشعارات</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-cog"></i>
+                    <span>الإعدادات</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="stats">
+                    <div class="stat-item">
+                        <i class="fas fa-eye"></i>
+                        <div>
+                            <span class="stat-value">1,245</span>
+                            <span class="stat-label">مشاهدة</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-home"></i>
+                        <div>
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">عقارات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="dashboard-content">
+            <div class="page-header">
+                <h1><i class="fas fa-tachometer-alt"></i> لوحة التحكم</h1>
+                <p>مرحباً بعودتك، محمد! هذه آخر تحديثات حسابك.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- بطاقة سريعة -->
+                <div class="card quick-actions">
+                    <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
+                    <div class="actions-grid">
+                        <a href="add-property.html" class="action-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>إضافة عقار</span>
+                        </a>
+                        <a href="map.html" class="action-btn">
+                            <i class="fas fa-map"></i>
+                            <span>استعراض الخريطة</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-search"></i>
+                            <span>بحث متقدم</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-filter"></i>
+                            <span>فلاتر البحث</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- عقاراتي -->
+                <div class="card my-properties">
+                    <div class="card-header">
+                        <h3><i class="fas fa-home"></i> عقاراتي</h3>
+                        <a href="#" class="view-all">عرض الكل <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    <div class="properties-list">
+                        <div class="property-item">
+                            <div class="property-image">
+                                <img src="assets/property1.jpg" alt="عقار">
+                                <span class="property-status for-sale">للبيع</span>
+                            </div>
+                            <div class="property-info">
+                                <h4>فيلا فاخرة في الرياض</h4>
+                                <p class="property-location">
+                                    <i class="fas fa-map-marker-alt"></i> حي النخيل، الرياض
+                                </p>
+                                <div class="property-details">
+                                    <span><i class="fas fa-bed"></i> 5 غرف</span>
+                                    <span><i class="fas fa-bath"></i> 4 حمامات</span>
+                                    <span><i class="fas fa-ruler-combined"></i> 450 م²</span>
+                                </div>
+                                <div class="property-price">1,250,000 ريال</div>
+                                <div class="property-actions">
+                                    <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> تعديل</button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> حذف</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الإشعارات -->
+                <div class="card notifications">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bell"></i> الإشعارات</h3>
+                        <button class="mark-read">تحديد الكل كمقروء</button>
+                    </div>
+                    <div class="notifications-list">
+                        <div class="notification-item new">
+                            <i class="fas fa-home notification-icon"></i>
+                            <div class="notification-content">
+                                <p>تمت الموافقة على عقارك "شقة في جدة"</p>
+                                <span class="notification-time">منذ ساعتين</span>
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-eye notification-icon"></i>
+                            <div class="notification-content">
+                                <p>15 شخصاً شاهدوا عقارك اليوم</p>
+                                <span class="notification-time">منذ 5 ساعات</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- العقارات المقترحة -->
+                <div class="card suggested-properties">
+                    <div class="card-header">
+                        <h3><i class="fas fa-star"></i> مقترحة لك</h3>
+                    </div>
+                    <div class="suggestions-grid">
+                        <div class="suggestion-item">
+                            <div class="suggestion-image">
+                                <img src="assets/property2.jpg" alt="عقار">
+                                <button class="favorite-btn"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="suggestion-info">
+                                <h4>شقة للبيع في دبي</h4>
+                                <p class="suggestion-price">850,000 درهم</p>
+                                <p class="suggestion-location">
+                                    <i class="fas fa-map-marker-alt"></i> دبي مارينا
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
